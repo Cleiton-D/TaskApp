@@ -15,6 +15,12 @@ export const Content = styled.div`
   h1 {
     margin-bottom: 15px;
   }
+
+  > button {
+    position: relative;
+    left: 100%;
+    transform: translateX(-100%);
+  }
 `;
 
 export const TaskList = styled.ul`
