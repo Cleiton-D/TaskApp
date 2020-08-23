@@ -1,4 +1,11 @@
-import React, { createContext, useState, useCallback, useContext } from 'react';
+import React, {
+  createContext,
+  useState,
+  useCallback,
+  useContext,
+  ComponentType,
+  useMemo,
+} from 'react';
 
 type AccessContextData = {
   setPermissions(permissions: string[]): void;
@@ -30,4 +37,30 @@ function useAccess() {
   return context;
 }
 
-export { AccessProvider as default, useAccess };
+type WithAccessProps = {
+  accessCode?: string;
+};
+
+function withAccess<P>(Component: ComponentType<P>) {
+  const WithAccessComp: React.FC<P & WithAccessProps> = ({
+    accessCode,
+    ...rest
+  }) => {
+    const { hasAccess } = useAccess();
+
+    const access = useMemo(() => {
+      if (!accessCode) return true;
+
+      return hasAccess(accessCode);
+    }, [accessCode, hasAccess]);
+
+    return access ? <Component {...(rest as P)} /> : <></>;
+  };
+
+  WithAccessComp.displayName = `withPermissions(${
+    Component.displayName || Component.name
+  })`;
+  return WithAccessComp;
+}
+
+export { AccessProvider as default, useAccess, withAccess };
