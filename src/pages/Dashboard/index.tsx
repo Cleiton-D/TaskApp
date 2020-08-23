@@ -2,11 +2,13 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FiXCircle } from 'react-icons/fi';
 
+import { useAccess } from '../../hooks/access';
+
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
 import DetailModal from '../../components/DetailModal';
 
-import { Container, Content, TaskList } from './styles';
+import { Container, Content, TaskList, Users, Header } from './styles';
 
 type Task = {
   id: number;
@@ -18,6 +20,7 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<number | null>(null);
 
+  const { setPermissions } = useAccess();
   const history = useHistory();
 
   const loadTasks = useCallback(async () => {
@@ -50,14 +53,48 @@ const Dashboard: React.FC = () => {
     setSelectedTask(null);
   }, []);
 
+  const handleUser = useCallback(
+    (key: number) => {
+      switch (key) {
+        case 1:
+          setPermissions(['001', '002']);
+          break;
+
+        case 2:
+          setPermissions(['001']);
+          break;
+
+        default:
+          setPermissions([]);
+          break;
+      }
+    },
+    [setPermissions]
+  );
+
   return (
     <>
       <Container>
         <Content>
-          <Button color="#28a745" onClick={handleNewTask}>
-            Insert Task
-          </Button>
-          <h1>Task List</h1>
+          <Users>
+            <button type="button" onClick={() => handleUser(1)}>
+              User 1
+            </button>
+            <button type="button" onClick={() => handleUser(2)}>
+              User 2
+            </button>
+            <button type="button" onClick={() => handleUser(-1)}>
+              Logout
+            </button>
+          </Users>
+
+          <Header>
+            <Button color="#28a745" onClick={handleNewTask} accessCode="001">
+              Insert Task
+            </Button>
+            <h1>Task List</h1>
+          </Header>
+
           <TaskList>
             {data.map((task) => (
               <li key={task.id}>
@@ -66,6 +103,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div>
                   <ActionButton
+                    accessCode="002"
                     icon={FiXCircle}
                     onClick={() => handleDelete(task.id)}
                   />

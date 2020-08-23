@@ -10,17 +10,7 @@ export const Container = styled.main`
 export const Content = styled.section`
   max-width: 700px;
   width: 100%;
-  margin-top: 50px;
-
-  h1 {
-    margin-bottom: 15px;
-  }
-
-  > button {
-    position: relative;
-    left: 100%;
-    transform: translateX(-100%);
-  }
+  margin-top: 20px;
 `;
 
 export const TaskList = styled.ul`
@@ -59,6 +49,35 @@ export const TaskList = styled.ul`
       strong {
         font-size: 18px;
       }
+    }
+  }
+`;
+
+export const Header = styled.div`
+  margin-top: 100px;
+
+  h1 {
+    margin-bottom: 15px;
+  }
+
+  button {
+    position: relative;
+    left: 100%;
+    transform: translateX(-100%);
+  }
+`;
+
+export const Users = styled.div`
+  align-self: flex-end;
+  position: relative;
+  float: right;
+
+  button {
+    margin-right: 10px;
+    padding: 5px 10px;
+
+    &:last-child {
+      margin-right: 0;
     }
   }
 `;

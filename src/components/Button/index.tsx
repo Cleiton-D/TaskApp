@@ -1,5 +1,7 @@
 import React, { ButtonHTMLAttributes } from 'react';
 
+import { withAccess } from '../../hooks/access';
+
 import { Container } from './styles';
 
 type ActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -14,4 +16,4 @@ const Button: React.FC<ActionButtonProps> = ({ children, color, ...rest }) => {
   );
 };
 
-export default Button;
+export default withAccess(Button);

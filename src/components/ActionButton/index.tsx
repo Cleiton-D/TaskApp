@@ -1,6 +1,8 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import { IconBaseProps } from 'react-icons';
 
+import { withAccess } from '../../hooks/access';
+
 import { Container } from './styles';
 
 type ActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -15,4 +17,4 @@ const ActionButton: React.FC<ActionButtonProps> = ({ icon: Icon, ...rest }) => {
   );
 };
 
-export default ActionButton;
+export default withAccess(ActionButton);
