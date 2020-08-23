@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FiXCircle } from 'react-icons/fi';
 
@@ -8,21 +8,46 @@ import DetailModal from '../../components/DetailModal';
 
 import { Container, Content, TaskList } from './styles';
 
+type Task = {
+  id: number;
+  title: string;
+  description: string;
+};
+
 const Dashboard: React.FC = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [data, setData] = useState<Task[]>([]);
+  const [selectedTask, setSelectedTask] = useState<number | null>(null);
 
   const history = useHistory();
 
-  const handleDelete = useCallback((event: React.MouseEvent) => {
-    console.log(event.target);
+  const loadTasks = useCallback(async () => {
+    const response = await fetch('http://127.0.0.1:3333/tasks');
+    const result = (await response.json()) as Task[];
+    setData(result);
   }, []);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
+
+  const handleDelete = useCallback(
+    async (id: number) => {
+      await fetch(`http://127.0.0.1:3333/tasks/${id}`, { method: 'DELETE' });
+      loadTasks();
+    },
+    [loadTasks]
+  );
 
   const handleNewTask = useCallback(() => {
     history.push('new');
   }, [history]);
 
+  const handleOpenModal = useCallback((id: number) => {
+    setSelectedTask(id);
+  }, []);
+
   const handleCloseModal = useCallback(() => {
-    setShowModal(false);
+    setSelectedTask(null);
   }, []);
 
   return (
@@ -34,16 +59,25 @@ const Dashboard: React.FC = () => {
           </Button>
           <h1>Task List</h1>
           <TaskList>
-            <li>
-              <strong>Task 1</strong>
-              <div>
-                <ActionButton icon={FiXCircle} onClick={handleDelete} />
-              </div>
-            </li>
+            {data.map((task) => (
+              <li key={task.id}>
+                <div onClick={() => handleOpenModal(task.id)}>
+                  <strong>{task.title}</strong>
+                </div>
+                <div>
+                  <ActionButton
+                    icon={FiXCircle}
+                    onClick={() => handleDelete(task.id)}
+                  />
+                </div>
+              </li>
+            ))}
           </TaskList>
         </Content>
       </Container>
-      {showModal && <DetailModal close={handleCloseModal} />}
+      {selectedTask && (
+        <DetailModal close={handleCloseModal} task={selectedTask} />
+      )}
     </>
   );
 };

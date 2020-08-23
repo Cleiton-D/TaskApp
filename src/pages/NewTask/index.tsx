@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, MouseEvent } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Input from '../../components/Input';
 import TextArea from '../../components/TextArea';
@@ -8,14 +9,28 @@ import { Container, Content } from './styles';
 
 const NewTask: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
+  const history = useHistory();
 
-  const handleSave = useCallback((event: MouseEvent) => {
-    event.preventDefault();
-    if (!formRef.current) return;
+  const handleSave = useCallback(
+    async (event: MouseEvent) => {
+      event.preventDefault();
+      if (!formRef.current) return;
 
-    const data = new FormData(formRef.current);
-    console.log(data);
-  }, []);
+      const formData = new FormData(formRef.current);
+      const data: { [key: string]: any } = {};
+
+      formData.forEach((value, key) => (data[key] = value));
+
+      await fetch('http://127.0.0.1:3333/tasks', {
+        body: JSON.stringify(data),
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+      });
+
+      history.push('/');
+    },
+    [history]
+  );
 
   return (
     <Container>

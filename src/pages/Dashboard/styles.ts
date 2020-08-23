@@ -49,8 +49,16 @@ export const TaskList = styled.ul`
       transform: translateY(1px) translateX(2px);
     }
 
-    strong {
-      font-size: 18px;
+    > div:first-child {
+      display: flex;
+      flex: 1;
+      align-items: center;
+
+      height: 100%;
+
+      strong {
+        font-size: 18px;
+      }
     }
   }
 `;
