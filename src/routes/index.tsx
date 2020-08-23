@@ -1,5 +1,7 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
+
+import Route from './Route';
 
 import Dashboard from '../pages/Dashboard';
 import NewTask from '../pages/NewTask';
@@ -7,7 +9,7 @@ import NewTask from '../pages/NewTask';
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={Dashboard} />
-    <Route path="/new" component={NewTask} />
+    <Route path="/new" accessCode="001" component={NewTask} />
   </Switch>
 );
 
